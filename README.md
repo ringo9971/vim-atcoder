@@ -1,10 +1,10 @@
 # vim-atcoder
 
-atcoderのテストケースを自動で通すプラグインです。<br>
-ポップアップウインドウを使っているためvimのバージョン8.1.1561が必須です。
+AtCoderのテストケースを自動で通すプラグインです。<br>
+ポップアップウインドウを使っているためVimのバージョン8.1.1561が必須です。
 
 ### 機能
-atcoderのテストケースのチェック
+AtCoderのテストケースのチェック
 
 ![scrennshot0](screenshot/screenshot0.jpg)
 ![scrennshot1](screenshot/screenshot1.jpg)
@@ -14,20 +14,38 @@ atcoderのテストケースのチェック
 * vim 8.1.1561
 
 ### インストール
+#### dein
+
+```
+[[plugins]]
+repo = 'ringo9971/vim-atcoder'
+```
+
 #### NeoBundle
 
 ```
-NeoBundle 'cannot-fly-pig/vim-atcoder'
+NeoBundle 'ringo9971/vim-atcoder'
 ```
 
 #### Vundle
 
 ```
-Plugin 'cannot-fly-pig/vim-atcoder'
+Plugin 'ringo9971/vim-atcoder'
 ```
+
 ### 使い方
 ```
-:Atcoder [ABC||AGC||ARC] [コンテスト番号] [task(aとかbとか)]
+[abc||arc||agc]
+ └ [コンテスト番号]
+    ├ A.cpp 
+    ├ B.cpp 
+    ├ C.cpp 
+    └ D.cpp
+```
+というディレクトリ構成上で
+
+```
+:AtCoder
 ```
 ### 設定項目
 ```
@@ -40,7 +58,7 @@ let g:atcoder_name = [ユーザー名]
 let g:atcoder_pass = [パスワード]
 ```
 ログインに必要
-### 注意点
+### 対応言語
 
-* 今の所 c++ (g++ -std=gnu++03 -O2 -I/opt/boost/gcc/include -L/opt/boost/gcc/lib -o ./a.out)にしか対応していません
-* 企業コンには未対応です(対応予定)
+* C++ (g++ -std = gnu++1y -O2)
+* Vim script (開発途中)
