@@ -153,6 +153,7 @@ function! atcoder#AtCoder()
     let s:a = substitute(s:a, '.<', '<', 'g')
     let s:b = substitute(s:b, '>', '', 'g')
     let s:b = substitute(s:b, '.<', '<<', 'g')
+    let s:b = substitute(s:b, '', '', 'g')
 		call add(s:out, s:b[1:-3])
 		call add(s:in,  s:a[1:-2])
 		let s:ii += 1
