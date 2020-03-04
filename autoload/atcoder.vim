@@ -4,12 +4,6 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
-let s:in     = []
-let s:out    = []
-let s:y_out  = []
-let s:t_bool = []
-let s:bool = v:true
-
 function! atcoder#Login(n, p)
 	echo 'login now...'
 	let login = system('curl -c '.$HOME.'/.atcoder-cookie.txt -d name='.a:n.' -d password='.a:p.' https://arc030.contest.atcoder.jp/login?next_url=https%3A%2F%2Farc030.contest.atcoder.jp%2Fsubmissions%2Fme')
@@ -17,6 +11,7 @@ function! atcoder#Login(n, p)
 endfunction
 
 function! s:cpp(num) abort
+  execute 'w!'
   let s:a = system('g++ -std=gnu++1y -O2 '.expand('%'))
 
   let s:i = 0
@@ -110,6 +105,11 @@ function! atcoder#AtCoder()
 		call atcoder#Login(g:atcoder_name, g:atcoder_pass)
 	endif
   
+  let s:in     = []
+  let s:out    = []
+  let s:y_out  = []
+  let s:t_bool = []
+  let s:bool = v:true
   let s:path = split(expand('%:p'), '/')
   let s:contest = s:path[-3].s:path[-2]
   let s:diff = s:path[-1][0]
