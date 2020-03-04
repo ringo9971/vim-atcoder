@@ -113,7 +113,7 @@ function! atcoder#AtCoder()
   let s:path = split(expand('%:p'), '/')
   let s:contest = s:path[-3].s:path[-2]
   let s:diff = s:path[-1][0]
-  if s:path[-2] <# '020'
+  if (s:path[-3] ==? 'abc' && s:path[-2] <# '020') || (s:path[-3] ==? 'arc' && s:path[-2] <# '035')
     if     s:diff ==? 'a'
       let s:diff = '1'
     elseif s:diff ==? 'b'
