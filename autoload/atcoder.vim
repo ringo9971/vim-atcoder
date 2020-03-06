@@ -16,7 +16,8 @@ function! s:cpp(num) abort
   let s:i = 0
 	while s:i < a:num-1
     let s:a = system('echo '.substitute(s:in[s:i], "\n", '', 'g').' | ./a.out')
-    " 最後に改行を入れていたら消す
+    " 最初と最後に改行を入れていたら消す
+    let s:a = substitute(s:a, "^\n", '', '')
     let s:a = substitute(s:a, "\n$", '', '')
 
 		call add(s:y_out, s:a)
