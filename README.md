@@ -58,6 +58,10 @@ let g:atcoder_name = [ユーザー名]
 let g:atcoder_pass = [パスワード]
 ```
 ログインに必要
+```
+let g:atcoder_directory = [任意のフォルダ]
+```
+
 ### 対応言語
 
 * C++ (g++ -std = gnu++1y -O2)
