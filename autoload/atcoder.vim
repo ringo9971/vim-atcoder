@@ -17,7 +17,7 @@ function! s:cpp(num) abort
 	while s:i < a:num-1
     let s:a = system('echo '.substitute(s:in[s:i], "\n", '', 'g').' | ./a.out')
     " 最後に改行を入れていたら消す
-    let s:a = substitute(s:a, '\n$', '', '')
+    let s:a = substitute(s:a, "\n$", '', '')
 
 		call add(s:y_out, s:a)
 		if s:a != s:out[s:i]
@@ -163,6 +163,7 @@ function! atcoder#AtCoder()
 
       let s:a = matchstr(matchstr(s:a, 'pre.*>.\{-}</pre>'), '>.\{-}<')
       let s:b = matchstr(matchstr(s:b, 'pre.*>.\{-}</pre>'), '>.\{-}<')
+      let s:b = substitute(s:b, ">\n", '>', '')
       call add(s:out, s:b[1:-3])
       call add(s:in,  s:a[1:-2])
       let s:ii += 1
