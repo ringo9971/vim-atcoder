@@ -141,8 +141,9 @@ function! atcoder#AtCoder()
         endif
       endif
 
-      let s:text = system('curl -b '.$HOME.'/.atcoder-cookie.txt https://'.s:contest.'.contest.atcoder.jp/tasks/'.s:contest.'_'.s:diff)
-      echo 'https://'.s:contest.'.contest.atcoder.jp/tasks/'.s:contest.'_'.s:diff
+      let s:text = system('curl -b '.$HOME.'/.atcoder-cookie.txt https://atcoder.jp/contests/'.s:contest.'/tasks/'.s:contest.'_'.s:diff)
+      echo 'https://atcoder.jp/contests/'.s:contest.'/tasks/'.s:contest.'_'.s:diff
+      
       call system('touch ' . s:filepath)
       let s:text = substitute(s:text, '入力例', 'nyuuryokurei',  'g')
       let s:text = substitute(s:text, '出力例', 'syuturyokurei', 'g')
