@@ -3,7 +3,6 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 
-
 function! atcoder#Login(n, p)
 	echo 'login now...'
 	let login = system('curl -c '.$HOME.'/.atcoder-cookie.txt -d name='.a:n.' -d password='.a:p.' https://arc030.contest.atcoder.jp/login?next_url=https%3A%2F%2Farc030.contest.atcoder.jp%2Fsubmissions%2Fme')
@@ -16,7 +15,7 @@ function! s:cpp(num) abort
 
   let s:i = 0
 	while s:i < a:num-1
-    let s:a = system('echo '.substitute(s:in[s:i], '\n', '', 'g').' | ./a.out')
+    let s:a = system('echo '.substitute(s:in[s:i], "\n", '', 'g').' | ./a.out')
     " 最後に改行を入れていたら消す
     let s:a = substitute(s:a, '\n$', '', '')
 
@@ -88,8 +87,7 @@ function! s:vimscript(num) abort
 
 		call add(s:y_out, s:ans)
 
-		let s:test_num = s:i+1
-		call s:table.add_row([s:test_num, s:in[s:i], s:out[s:i], s:y_out[s:i], s:t_bool[s:i]])
+		call s:table.add_row([s:i+1, s:in[s:i], s:out[s:i], s:y_out[s:i], s:t_bool[s:i]])
 		let s:i += 1
 	endwhile
 
@@ -113,24 +111,11 @@ function! atcoder#AtCoder()
   let s:path = split(expand('%:p'), '/')
   let s:contest = s:path[-3].s:path[-2]
   let s:diff = s:path[-1][0]
-  if (s:path[-3] ==? 'abc' && s:path[-2] <# '020') || (s:path[-3] ==? 'arc' && s:path[-2] <# '035')
-    if     s:diff ==? 'a'
-      let s:diff = '1'
-    elseif s:diff ==? 'b'
-      let s:diff = '2'
-    elseif s:diff ==? 'c'
-      let s:diff = '3'
-    elseif s:diff ==? 'd'
-      let s:diff = '4'
-    endif
-  endif
-	let s:text = system('curl -b '.$HOME.'/.atcoder-cookie.txt https://'.s:contest.'.contest.atcoder.jp/tasks/'.s:contest.'_'.s:diff)
-
-  echo 'https://'.s:contest.'.contest.atcoder.jp/tasks/'.s:contest.'_'.s:diff
   
-	let s:i = 1
-	let s:V = vital#atcoder#new()
-	let s:T = s:V.import('Text.Table')
+  let s:i  = 1
+  let s:ii = 1
+  let s:V  = vital#atcoder#new()
+  let s:T  = s:V.import('Text.Table')
 	let s:table = s:T.new({
 	    \   'columns': [{}, {}, {}, {}, {}], 
 	    \   'header':  ['No.', 'IN', 'OUT', '結果', '判定'], 
@@ -138,26 +123,54 @@ function! atcoder#AtCoder()
 	let s:ac = ["    _       ____   _","   / \\     / ___| | |","  / _ \\   | |     | |"," / ___ \\  | |___  |_|","/_/   \\_\\  \\____| (_)",""]
 	let s:wa = ["__        __     _      _ ","\\ \\      / /    / \\    | |"," \\ \\ /\\ / /    / _ \\   | |","  \\ V  V /    / ___ \\  |_|","   \\_/\\_/    /_/   \\_\\ (_)",""]
 	
-	while match(s:text, '入力例.\?'.s:i) != -1
-		let s:i += 1
-	endwhile
-	let s:ii = 1
-	while s:ii < s:i
-		let s:a = matchstr(s:text, '入力例.\?'.s:ii.'.\{-}出力例.\?'.s:ii)
-		let s:b = matchstr(s:text, '出力例.\?'.s:ii.'.\{-}</pre>')
-		let s:a = matchstr(s:a, 'pre.*>.\{-}</pre>')
-		let s:b = matchstr(s:b, 'pre.*>.\{-}</pre>')
-		let s:a = matchstr(s:a, '>.\{-}<')
-		let s:b = matchstr(s:b, '>.\{-}<')
-    let s:a = substitute(s:a, '>', '', 'g')
-    let s:a = substitute(s:a, '.<', '<', 'g')
-    let s:b = substitute(s:b, '>', '', 'g')
-    let s:b = substitute(s:b, '.<', '<<', 'g')
-    let s:b = substitute(s:b, '', '', 'g')
-		call add(s:out, s:b[1:-3])
-		call add(s:in,  s:a[1:-2])
-		let s:ii += 1
-	endwhile
+  if exists('g:atcoder_directory')
+    let s:filepath = g:atcoder_directory.'/'.s:path[-3].'/'.s:path[-2]
+    " フォルダがなければ作る
+    if !isdirectory(s:filepath)
+      call mkdir(s:filepath, 'p')
+    endif
+    let s:filepath = s:filepath.'/'.s:path[-1][0]
+    
+    " 初めてならcurl
+    if !filereadable(s:filepath)
+      if (s:path[-3] ==? 'abc' && s:path[-2] <# '020') || (s:path[-3] ==? 'arc' && s:path[-2] <# '035')
+        if char2nr(s:diff) >= char2nr('A')
+          let s:diff = nr2char(char2nr(s:diff)-16)
+        else 
+          let s:diff = nr2char(char2nr(s:diff)-48)
+        endif
+      endif
+
+      let s:text = system('curl -b '.$HOME.'/.atcoder-cookie.txt https://'.s:contest.'.contest.atcoder.jp/tasks/'.s:contest.'_'.s:diff)
+      echo 'https://'.s:contest.'.contest.atcoder.jp/tasks/'.s:contest.'_'.s:diff
+      call system('touch ' . s:filepath)
+      let s:text = substitute(s:text, '入力例', 'nyuuryokurei',  'g')
+      let s:text = substitute(s:text, '出力例', 'syuturyokurei', 'g')
+      call writefile([s:text], s:filepath, 'a')
+    endif
+
+    let s:text = system('cat -A ' . s:filepath)
+    let s:text = substitute(s:text, '\^@', '', 'g')
+    let s:text = substitute(s:text, '\^M', "\n", 'g')
+    
+    while match(s:text, 'nyuuryokurei.\?'.s:i) != -1
+      let s:i += 1
+    endwhile
+
+    while s:ii < s:i
+      let s:a = matchstr(s:text, 'nyuuryokurei.\?'.s:ii.'.\{-}syuturyokurei.\?'.s:ii)
+      let s:b = matchstr(s:text, 'syuturyokurei.\?'.s:ii.'.\{-}</pre>')
+
+      let s:a = matchstr(matchstr(s:a, 'pre.*>.\{-}</pre>'), '>.\{-}<')
+      let s:b = matchstr(matchstr(s:b, 'pre.*>.\{-}</pre>'), '>.\{-}<')
+      call add(s:out, s:b[1:-3])
+      call add(s:in,  s:a[1:-2])
+      let s:ii += 1
+    endwhile
+  else
+    echo 'g:atcoder_directoryを設定して下さい'
+    return
+  endif
 
   if &filetype ==# 'cpp'
     call s:cpp(s:ii)
