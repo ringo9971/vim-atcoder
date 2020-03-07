@@ -147,6 +147,12 @@ function! atcoder#AtCoder()
       call system('touch ' . s:filepath)
       let s:text = substitute(s:text, '入力例', 'nyuuryokurei',  'g')
       let s:text = substitute(s:text, '出力例', 'syuturyokurei', 'g')
+
+      let s:i = 1
+      while match(s:text, 'nyuuryokurei.\?'.nr2char(s:i+65296)) != -1
+        let s:text = substitute(s:text, nr2char(s:i+65296), s:i, 'g')
+        let s:i += 1
+      endwhile
       call writefile([s:text], s:filepath, 'a')
     endif
 
