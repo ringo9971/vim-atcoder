@@ -5,7 +5,8 @@ set cpo&vim
 
 function! atcoder#Login(n, p)
 	echo 'login now...'
-	let login = system('curl -c '.$HOME.'/.atcoder-cookie.txt -d name='.a:n.' -d password='.a:p.' https://arc030.contest.atcoder.jp/login?next_url=https%3A%2F%2Farc030.contest.atcoder.jp%2Fsubmissions%2Fme')
+	let login = system('curl -c '.$HOME.'/.atcoder-cookie.txt -d name='.a:n.' -d password='.a:p.' https://atcoder.jp/login?continue=https%3A%2F%2Fatcoder.jp%2Fhome')
+	" let login = system('curl -c '.$HOME.'/.atcoder-cookie.txt -d name='.a:n.' -d password='.a:p.' https://arc030.contest.atcoder.jp/login?next_url=https%3A%2F%2Farc030.contest.atcoder.jp%2Fsubmissions%2Fme')
 	echo 'login!'
 endfunction
 
@@ -141,6 +142,8 @@ function! atcoder#AtCoder()
         endif
       endif
 
+      " let s:text = system('curl -b '.$HOME.'/.atcoder-cookie.txt https://'.s:contest.'.contest.atcoder.jp/tasks/'.s:contest.'_'.s:diff)
+      " echo 'https://'.s:contest.'.contest.atcoder.jp/tasks/'.s:contest.'_'.s:diff
       let s:text = system('curl -b '.$HOME.'/.atcoder-cookie.txt https://atcoder.jp/contests/'.s:contest.'/tasks/'.s:contest.'_'.s:diff)
       echo 'https://atcoder.jp/contests/'.s:contest.'/tasks/'.s:contest.'_'.s:diff
       
@@ -171,7 +174,8 @@ function! atcoder#AtCoder()
       let s:a = matchstr(matchstr(s:a, 'pre.*>.\{-}</pre>'), '>.\{-}<')
       let s:b = matchstr(matchstr(s:b, 'pre.*>.\{-}</pre>'), '>.\{-}<')
       let s:b = substitute(s:b, ">\n", '>', '')
-      call add(s:out, s:b[1:-3])
+      let s:b = substitute(s:b, "\n<", '<', '')
+      call add(s:out, s:b[1:-2])
       call add(s:in,  s:a[1:-2])
       let s:ii += 1
     endwhile
