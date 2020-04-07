@@ -8,7 +8,7 @@ if exists('g:loaded_vim_atcoder')
 endif
 let g:loaded_vim_atcoder = 1
 
-command! AtCoder call atcoder#AtCoder(<f-args>)
+command! AtCoder call atcoder#AtCoder()
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
