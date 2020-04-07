@@ -5,14 +5,14 @@ set cpo&vim
 
 function! atcoder#Login(n, p)
 	echo 'login now...'
-	let login = system('curl -c '.$HOME.'/.atcoder-cookie.txt -d name='.a:n.' -d password='.a:p.' https://atcoder.jp/login?continue=https%3A%2F%2Fatcoder.jp%2Fhome')
-	" let login = system('curl -c '.$HOME.'/.atcoder-cookie.txt -d name='.a:n.' -d password='.a:p.' https://arc030.contest.atcoder.jp/login?next_url=https%3A%2F%2Farc030.contest.atcoder.jp%2Fsubmissions%2Fme')
+	" let login = system('curl -c '.$HOME.'/.atcoder-cookie.txt -d name='.a:n.' -d password='.a:p.' https://atcoder.jp/login?continue=https%3A%2F%2Fatcoder.jp%2Fhome')
+	let login = system('curl -c '.$HOME.'/.atcoder-cookie.txt -d name='.a:n.' -d password='.a:p.' https://arc030.contest.atcoder.jp/login?next_url=https%3A%2F%2Farc030.contest.atcoder.jp%2Fsubmissions%2Fme')
 	echo 'login!'
 endfunction
 
 function! s:cpp(num) abort
   execute 'w!'
-  let s:a = system('g++ -std=gnu++1y -O2 '.expand('%'))
+  let s:a = system('g++ -std=gnu++17 -O2 '.expand('%'))
 
   let s:i = 0
 	while s:i < a:num-1
@@ -142,10 +142,12 @@ function! atcoder#AtCoder()
         endif
       endif
 
-      " let s:text = system('curl -b '.$HOME.'/.atcoder-cookie.txt https://'.s:contest.'.contest.atcoder.jp/tasks/'.s:contest.'_'.s:diff)
-      " echo 'https://'.s:contest.'.contest.atcoder.jp/tasks/'.s:contest.'_'.s:diff
-      let s:text = system('curl -b '.$HOME.'/.atcoder-cookie.txt https://atcoder.jp/contests/'.s:contest.'/tasks/'.s:contest.'_'.s:diff)
-      echo 'https://atcoder.jp/contests/'.s:contest.'/tasks/'.s:contest.'_'.s:diff
+
+      let s:text = system('curl -b '.$HOME.'/.atcoder-cookie.txt https://'.s:contest.'.contest.atcoder.jp/tasks/'.s:contest.'_'.s:diff)
+      echo 'https://'.s:contest.'.contest.atcoder.jp/tasks/'.s:contest.'_'.s:diff
+      " 新しい
+      " let s:text = system('curl -b '.$HOME.'/.atcoder-cookie.txt https://atcoder.jp/contests/'.s:contest.'/tasks/'.s:contest.'_'.s:diff)
+      " echo 'https://atcoder.jp/contests/'.s:contest.'/tasks/'.s:contest.'_'.s:diff
       
       call system('touch ' . s:filepath)
       let s:text = substitute(s:text, '入力例', 'nyuuryokurei',  'g')
