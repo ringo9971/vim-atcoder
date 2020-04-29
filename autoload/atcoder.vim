@@ -117,9 +117,19 @@ function! atcoder#Curl(n) abort
   call writefile([s:text], s:filepath, 'a')
 endfunction
 
+function! atcoder#Getpath() abort
+  let s:path = split(expand('%:p'), '/')
+  let s:filepath = g:atcoder_directory . '/' . s:path[-3] . '/' . s:path[-2]
+  " フォルダがなければ作る
+  if !isdirectory(s:filepath)
+    call mkdir(s:filepath, 'p')
+  endif
+  let s:filepath = g:atcoder_directory . '/' . s:path[-3] . '/' . s:path[-2] . '/' . substitute(s:path[-1], '\..*$', '', 'g')
+  return s:filepath
+endfunction
+
 function! atcoder#Get(n) abort
-    let s:path = split(expand('%:p'), '/')
-    let s:filepath = g:atcoder_directory.'/'.s:path[-3].'/'.s:path[-2].'/'.s:path[-1][0]
+  let s:filepath = atcoder#Getpath()
   if filereadable(s:filepath)
     call system('rm ' . s:filepath)
   endif
@@ -154,12 +164,7 @@ function! atcoder#AtCoder()
 	let s:wa = ["__        __     _      _ ","\\ \\      / /    / \\    | |"," \\ \\ /\\ / /    / _ \\   | |","  \\ V  V /    / ___ \\  |_|","   \\_/\\_/    /_/   \\_\\ (_)",""]
 	
   if exists('g:atcoder_directory')
-    let s:filepath = g:atcoder_directory.'/'.s:path[-3].'/'.s:path[-2]
-    " フォルダがなければ作る
-    if !isdirectory(s:filepath)
-      call mkdir(s:filepath, 'p')
-    endif
-    let s:filepath = s:filepath.'/'.s:path[-1][0]
+    let s:filepath = atcoder#Getpath()
     
     " 初めてならcurl
     if !filereadable(s:filepath)
