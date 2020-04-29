@@ -98,6 +98,35 @@ function! s:vimscript(num) abort
   execute 'w'
 endfunction
 
+function! atcoder#Curl(n) abort
+  let s:text = system('curl -b '.$HOME.'/.atcoder-cookie.txt ' . a:n)
+  echo a:n
+  " 新しい
+  " let s:text = system('curl -b '.$HOME.'/.atcoder-cookie.txt https://atcoder.jp/contests/'.s:contest.'/tasks/'.s:contest.'_'.s:diff)
+  " echo 'https://atcoder.jp/contests/'.s:contest.'/tasks/'.s:contest.'_'.s:diff
+
+  call system('touch ' . s:filepath)
+  let s:text = substitute(s:text, '入力例', 'nyuuryokurei',  'g')
+  let s:text = substitute(s:text, '出力例', 'syuturyokurei', 'g')
+
+  let s:i = 1
+  while match(s:text, 'nyuuryokurei.\?'.nr2char(s:i+65296)) != -1
+    let s:text = substitute(s:text, nr2char(s:i+65296), s:i, 'g')
+    let s:i += 1
+  endwhile
+  call writefile([s:text], s:filepath, 'a')
+endfunction
+
+function! atcoder#Get(n) abort
+    let s:path = split(expand('%:p'), '/')
+    let s:filepath = g:atcoder_directory.'/'.s:path[-3].'/'.s:path[-2].'/'.s:path[-1][0]
+  if filereadable(s:filepath)
+    call system('rm ' . s:filepath)
+  endif
+  call atcoder#Curl(a:n)
+  call atcoder#AtCoder()
+endfunction
+
 function! atcoder#AtCoder()
 	if filereadable($HOME.'/.atcoder-cookie.txt' == 0) && g:atcoder_login == 1
 		echo filereadable($HOME.'/.atcoder-cookie.txt')
@@ -141,24 +170,7 @@ function! atcoder#AtCoder()
           let s:diff = nr2char(char2nr(s:diff)-48)
         endif
       endif
-
-
-      let s:text = system('curl -b '.$HOME.'/.atcoder-cookie.txt https://'.s:contest.'.contest.atcoder.jp/tasks/'.s:contest.'_'.s:diff)
-      echo 'https://'.s:contest.'.contest.atcoder.jp/tasks/'.s:contest.'_'.s:diff
-      " 新しい
-      " let s:text = system('curl -b '.$HOME.'/.atcoder-cookie.txt https://atcoder.jp/contests/'.s:contest.'/tasks/'.s:contest.'_'.s:diff)
-      " echo 'https://atcoder.jp/contests/'.s:contest.'/tasks/'.s:contest.'_'.s:diff
-      
-      call system('touch ' . s:filepath)
-      let s:text = substitute(s:text, '入力例', 'nyuuryokurei',  'g')
-      let s:text = substitute(s:text, '出力例', 'syuturyokurei', 'g')
-
-      let s:i = 1
-      while match(s:text, 'nyuuryokurei.\?'.nr2char(s:i+65296)) != -1
-        let s:text = substitute(s:text, nr2char(s:i+65296), s:i, 'g')
-        let s:i += 1
-      endwhile
-      call writefile([s:text], s:filepath, 'a')
+      call atcoder#Curl('https://'.s:contest.'.contest.atcoder.jp/tasks/'.s:contest.'_'.s:diff)
     endif
 
     let s:text = system('cat -A ' . s:filepath)
