@@ -21,7 +21,7 @@ function! s:cpp(num) abort
     let s:a = substitute(s:a, "\n$", '', '')
 
 		call add(s:y_out, s:a)
-		if s:a != s:out[s:i]
+		if s:a !=# s:out[s:i]
 			call add(s:t_bool, 'WA')
 			let s:bool = v:false
 		else
