@@ -5,18 +5,18 @@ set cpo&vim
 
 function! atcoder#Login(n, p)
 	echo 'login now...'
-	" let login = system('curl -c '.$HOME.'/.atcoder-cookie.txt -d name='.a:n.' -d password='.a:p.' https://atcoder.jp/login?continue=https%3A%2F%2Fatcoder.jp%2Fhome')
-	let login = system('curl -c '.$HOME.'/.atcoder-cookie.txt -d name='.a:n.' -d password='.a:p.' https://arc030.contest.atcoder.jp/login?next_url=https%3A%2F%2Farc030.contest.atcoder.jp%2Fsubmissions%2Fme')
+	" let login = system('curl -c ' . $HOME . '/.atcoder-cookie.txt -d name=' . a:n . ' -d password=' . a:p . ' https://atcoder.jp/login?continue=https%3A%2F%2Fatcoder.jp%2Fhome')
+	let login = system('curl -c ' . $HOME . '/.atcoder-cookie.txt -d name=' . a:n . ' -d password=' . a:p . ' https://arc030.contest.atcoder.jp/login?next_url=https%3A%2F%2Farc030.contest.atcoder.jp%2Fsubmissions%2Fme')
 	echo 'login!'
 endfunction
 
 function! s:cpp(num) abort
   execute 'w!'
-  let s:a = system('g++ -std=gnu++17 -O2 '.expand('%'))
+  let s:a = system('g++ -std=gnu++17 -O2 ' . expand('%'))
 
   let s:i = 0
 	while s:i < a:num-1
-    let s:a = system('echo '.substitute(s:in[s:i], "\n", '', 'g').' | ./a.out')
+    let s:a = system('echo ' . substitute(s:in[s:i], "\n", '', 'g') . ' | ./a.out')
     " 最後に改行を入れていたら消す
     let s:a = substitute(s:a, "\n$", '', '')
 
@@ -75,7 +75,7 @@ function! s:vimscript(num) abort
       if i ==# 0
         let s:ans = s:lines[0]
       else
-        let s:ans = s:ans."\n".s:lines[i]
+        let s:ans = s:ans . "\n" . s:lines[i]
       endif
     endfor
 
@@ -99,18 +99,18 @@ function! s:vimscript(num) abort
 endfunction
 
 function! atcoder#Curl(n) abort
-  let s:text = system('curl -b '.$HOME.'/.atcoder-cookie.txt ' . a:n)
+  let s:text = system('curl -b ' . $HOME . '/.atcoder-cookie.txt ' . a:n)
   echo a:n
   " 新しい
-  " let s:text = system('curl -b '.$HOME.'/.atcoder-cookie.txt https://atcoder.jp/contests/'.s:contest.'/tasks/'.s:contest.'_'.s:diff)
-  " echo 'https://atcoder.jp/contests/'.s:contest.'/tasks/'.s:contest.'_'.s:diff
+  " let s:text = system('curl -b ' . $HOME . '/.atcoder-cookie.txt https://atcoder.jp/contests/' . s:contest . '/tasks/' . s:contest . '_' . s:diff)
+  " echo 'https://atcoder.jp/contests/' . s:contest . '/tasks/' . s:contest . '_' . s:diff
 
   call system('touch ' . s:filepath)
   let s:text = substitute(s:text, '入力例', 'nyuuryokurei',  'g')
   let s:text = substitute(s:text, '出力例', 'syuturyokurei', 'g')
 
   let s:i = 1
-  while match(s:text, 'nyuuryokurei.\?'.nr2char(s:i+65296)) != -1
+  while match(s:text, 'nyuuryokurei.\?' . nr2char(s:i+65296)) != -1
     let s:text = substitute(s:text, nr2char(s:i+65296), s:i, 'g')
     let s:i += 1
   endwhile
@@ -138,8 +138,8 @@ function! atcoder#Get(n) abort
 endfunction
 
 function! atcoder#AtCoder()
-	if filereadable($HOME.'/.atcoder-cookie.txt' == 0) && g:atcoder_login == 1
-		echo filereadable($HOME.'/.atcoder-cookie.txt')
+	if filereadable($HOME . '/.atcoder-cookie.txt' == 0) && g:atcoder_login == 1
+		echo filereadable($HOME . '/.atcoder-cookie.txt')
 		call atcoder#Login(g:atcoder_name, g:atcoder_pass)
 	endif
   
@@ -149,7 +149,7 @@ function! atcoder#AtCoder()
   let s:t_bool = []
   let s:bool = v:true
   let s:path = split(expand('%:p'), '/')
-  let s:contest = s:path[-3].s:path[-2]
+  let s:contest = s:path[-3] . s:path[-2]
   let s:diff = s:path[-1][0]
   
   let s:i  = 1
@@ -175,20 +175,20 @@ function! atcoder#AtCoder()
           let s:diff = nr2char(char2nr(s:diff)-48)
         endif
       endif
-      call atcoder#Curl('https://'.s:contest.'.contest.atcoder.jp/tasks/'.s:contest.'_'.s:diff)
+      call atcoder#Curl('https://' . s:contest . '.contest.atcoder.jp/tasks/' . s:contest . '_' . s:diff)
     endif
 
     let s:text = system('cat -A ' . s:filepath)
     let s:text = substitute(s:text, '\^@', '', 'g')
     let s:text = substitute(s:text, '\^M', "\n", 'g')
     
-    while match(s:text, 'nyuuryokurei.\?'.s:i) != -1
+    while match(s:text, 'nyuuryokurei.\?' . s:i) != -1
       let s:i += 1
     endwhile
 
     while s:ii < s:i
-      let s:a = matchstr(s:text, 'nyuuryokurei.\?'.s:ii.'.\{-}syuturyokurei.\?'.s:ii)
-      let s:b = matchstr(s:text, 'syuturyokurei.\?'.s:ii.'.\{-}</pre>')
+      let s:a = matchstr(s:text, 'nyuuryokurei.\?'  . s:ii . '.\{-}syuturyokurei.\?' . s:ii)
+      let s:b = matchstr(s:text, 'syuturyokurei.\?' . s:ii . '.\{-}</pre>')
 
       let s:a = matchstr(matchstr(s:a, 'pre.*>.\{-}</pre>'), '>.\{-}<')
       let s:b = matchstr(matchstr(s:b, 'pre.*>.\{-}</pre>'), '>.\{-}<')
