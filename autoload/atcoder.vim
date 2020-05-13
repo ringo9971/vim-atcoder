@@ -5,17 +5,16 @@ set cpo&vim
 
 function! atcoder#Login(n, p)
 	echo 'login now...'
-	" let login = system('curl -c ' . $HOME . '/.atcoder-cookie.txt -d name=' . a:n . ' -d password=' . a:p . ' https://atcoder.jp/login?continue=https%3A%2F%2Fatcoder.jp%2Fhome')
-	let login = system('curl -c ' . $HOME . '/.atcoder-cookie.txt -d name=' . a:n . ' -d password=' . a:p . ' https://arc030.contest.atcoder.jp/login?next_url=https%3A%2F%2Farc030.contest.atcoder.jp%2Fsubmissions%2Fme')
+	let login = system('curl -c ' . $HOME . '/.atcoder-cookie.txt -d name=' . a:n . ' -d password=' . a:p . ' https://atcoder.jp/login?continue=https%3A%2F%2Fatcoder.jp%2Fhome')
+	" let login = system('curl -c ' . $HOME . '/.atcoder-cookie.txt -d name=' . a:n . ' -d password=' . a:p . ' https://arc030.contest.atcoder.jp/login?next_url=https%3A%2F%2Farc030.contest.atcoder.jp%2Fsubmissions%2Fme')
 	echo 'login!'
 endfunction
 
-function! s:cpp(num) abort
+function! s:cpp() abort
   execute 'w!'
   let s:a = system('g++ -std=gnu++17 -O2 ' . expand('%'))
 
-  let s:i = 0
-	while s:i < a:num-1
+  for s:i in range(len(s:in))
     let s:a = system('echo ' . substitute(s:in[s:i], "\n", '', 'g') . ' | ./a.out')
     " 最後に改行を入れていたら消す
     let s:a = substitute(s:a, "\n$", '', '')
@@ -28,10 +27,8 @@ function! s:cpp(num) abort
 			call add(s:t_bool, 'AC')
 		endif
 		let s:test_num = s:i+1
-
-		call s:table.add_row([s:test_num, s:in[s:i], s:out[s:i], s:y_out[s:i], s:t_bool[s:i]])
-		let s:i += 1
-	endwhile
+    call s:table.add_row([s:test_num, s:in[s:i], s:out[s:i], s:y_out[s:i], s:t_bool[s:i]])
+  endfor
 endfunction
 
 function! s:vimscript(num) abort
@@ -61,8 +58,7 @@ function! s:vimscript(num) abort
   endfor
   execute 'w! ' . s:scriptfile
       
-  let s:i = 0
-	while s:i < a:num-1
+  for s:i in range(len(s:in))
     execute 'normal ggdG'
     call append(line('$'), s:in[s:i])
     execute '0 d'
@@ -89,8 +85,7 @@ function! s:vimscript(num) abort
 		call add(s:y_out, s:ans)
 
 		call s:table.add_row([s:i+1, s:in[s:i], s:out[s:i], s:y_out[s:i], s:t_bool[s:i]])
-		let s:i += 1
-	endwhile
+  endfor
 
   execute 'normal ggdG'
   execute 'r ' . s:swapfile
@@ -106,15 +101,22 @@ function! atcoder#Curl(n) abort
   " echo 'https://atcoder.jp/contests/' . s:contest . '/tasks/' . s:contest . '_' . s:diff
 
   call system('touch ' . s:filepath)
-  let s:text = substitute(s:text, '入力例', 'nyuuryokurei',  'g')
-  let s:text = substitute(s:text, '出力例', 'syuturyokurei', 'g')
 
   let s:i = 1
-  while match(s:text, 'nyuuryokurei.\?' . nr2char(s:i+65296)) != -1
-    let s:text = substitute(s:text, nr2char(s:i+65296), s:i, 'g')
+  let s:input = []
+  let s:output = []
+  while match(s:text, '入力例.\?' . s:i) != -1
+    call add(s:input, '入力例 ' . s:i)
+    call add(s:input, matchstr(matchstr(s:text, '入力例\s\?' . s:i . '.\{-}</pre>'), 'pre>.\{-}</pre')[4:-7])
+    call add(s:input, '入力例 ' . s:i)
+    call add(s:output, '出力例 ' . s:i)
+    call add(s:output, matchstr(matchstr(s:text, '出力例\s\?' . s:i . '.\{-}</pre>'), 'pre>.\{-}</pre')[4:-7])
+    call add(s:output, '出力例 ' . s:i)
     let s:i += 1
   endwhile
-  call writefile([s:text], s:filepath, 'a')
+
+  call writefile(s:input, s:filepath, 'a')
+  call writefile(s:output, s:filepath, 'a')
 endfunction
 
 function! atcoder#Getpath() abort
@@ -175,28 +177,15 @@ function! atcoder#AtCoder()
           let s:diff = nr2char(char2nr(s:diff)-48)
         endif
       endif
-      call atcoder#Curl('https://' . s:contest . '.contest.atcoder.jp/tasks/' . s:contest . '_' . s:diff)
+      call atcoder#Curl('https://atcoder.jp/contests/' . s:contest . '/tasks/' . s:contest . '_' . s:diff)
     endif
 
-    let s:text = system('cat -A ' . s:filepath)
-    let s:text = substitute(s:text, '\^@', '', 'g')
-    let s:text = substitute(s:text, '\^M', "\n", 'g')
-    
-    while match(s:text, 'nyuuryokurei.\?' . s:i) != -1
+    let s:text = join(readfile(s:filepath), "\n")
+
+    while match(s:text, '入力例\s' . s:i) != -1
+      call add(s:in,  matchstr(s:text, '入力例\s' . s:i . '.\{-}入力例')[12:-11])
+      call add(s:out, matchstr(s:text, '出力例\s' . s:i . '.\{-}出力例')[12:-11])
       let s:i += 1
-    endwhile
-
-    while s:ii < s:i
-      let s:a = matchstr(s:text, 'nyuuryokurei.\?'  . s:ii . '.\{-}syuturyokurei.\?' . s:ii)
-      let s:b = matchstr(s:text, 'syuturyokurei.\?' . s:ii . '.\{-}</pre>')
-
-      let s:a = matchstr(matchstr(s:a, 'pre.*>.\{-}</pre>'), '>.\{-}<')
-      let s:b = matchstr(matchstr(s:b, 'pre.*>.\{-}</pre>'), '>.\{-}<')
-      let s:b = substitute(s:b, ">\n", '>', '')
-      let s:b = substitute(s:b, "\n<", '<', '')
-      call add(s:out, s:b[1:-2])
-      call add(s:in,  s:a[1:-2])
-      let s:ii += 1
     endwhile
   else
     echo 'g:atcoder_directoryを設定して下さい'
@@ -204,9 +193,9 @@ function! atcoder#AtCoder()
   endif
 
   if &filetype ==# 'cpp'
-    call s:cpp(s:ii)
+    call s:cpp()
   elseif &filetype ==# 'vim'
-    call s:vimscript(s:ii)
+    call s:vimscript()
   else
     echo '未対応言語です'
     return
