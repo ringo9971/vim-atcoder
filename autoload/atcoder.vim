@@ -15,9 +15,7 @@ function! s:cpp() abort
   let s:a = system('g++ -std=gnu++17 -O2 ' . expand('%'))
 
   for s:i in range(len(s:in))
-    let s:a = system('echo ' . substitute(substitute(s:in[s:i], '\n', ' ', 'g'), '\((\|)\)', '\\\1', 'g') . ' | ./a.out')[:-1]
-    " 最後に改行を入れていたら消す
-    let s:a = substitute(s:a, "\n$", '', '')
+    let s:a = system('echo ' . substitute(substitute(s:in[s:i], '\n', ' ', 'g'), '\((\|)\)', '\\\1', 'g') . ' | ./a.out')[:-2]
 
 		call add(s:y_out, s:a)
 		if s:a !=# s:out[s:i]
