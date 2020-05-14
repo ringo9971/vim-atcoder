@@ -26,6 +26,9 @@ function! s:cpp() abort
 		endif
 		let s:test_num = s:i+1
     call s:table.add_row([s:test_num, s:in[s:i], s:out[s:i], s:y_out[s:i], s:t_bool[s:i]])
+    if s:i != len(s:in)-1
+    call s:table.add_row(['', '', '', '', ''])
+    endif
   endfor
 endfunction
 
@@ -108,7 +111,7 @@ function! atcoder#Curl(n) abort
     call add(s:input, substitute(s:text, '.*入力例.\?' . s:i . '.\{-}pre.\{-}>\(\s\|\n\|\)*\(.\{-}\)\n\?</pre>.*', '\2', ''))
     call add(s:input, '入力例 ' . s:i)
     call add(s:output, '出力例 ' . s:i)
-    call add(s:output, substitute(s:text, '.*出力例.\?' . s:i . '.\{-}pre.\{-}>\(\s\|\n\)*\(.\{-}\)\n\?</pre>.*', '\2', ''))
+    call add(s:output, substitute(s:text, '.*出力例.\?' . s:i . '.\{-}pre.\{-}>\(\s\|\n\|\)*\(.\{-}\)\n\?</pre>.*', '\2', ''))
     call add(s:output, '出力例 ' . s:i)
     let s:i += 1
   endwhile
