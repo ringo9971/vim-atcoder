@@ -105,10 +105,10 @@ function! atcoder#Curl(n) abort
   let s:output = []
   while match(s:text, '入力例.\?' . s:i) != -1
     call add(s:input, '入力例 ' . s:i)
-    call add(s:input, substitute(s:text, '.*入力例.\?1.\{-}pre.\{-}>\(\s\|\n\|\)*\(.\{-}\)\n\?</pre>.*', '\2', ''))
+    call add(s:input, substitute(s:text, '.*入力例.\?' . s:i . '.\{-}pre.\{-}>\(\s\|\n\|\)*\(.\{-}\)\n\?</pre>.*', '\2', ''))
     call add(s:input, '入力例 ' . s:i)
     call add(s:output, '出力例 ' . s:i)
-    call add(s:output, substitute(s:text, '.*出力例.\?1.\{-}pre.\{-}>\(\s\|\n\)*\(.\{-}\)\n\?</pre>.*', '\2', ''))
+    call add(s:output, substitute(s:text, '.*出力例.\?' . s:i . '.\{-}pre.\{-}>\(\s\|\n\)*\(.\{-}\)\n\?</pre>.*', '\2', ''))
     call add(s:output, '出力例 ' . s:i)
     let s:i += 1
   endwhile
