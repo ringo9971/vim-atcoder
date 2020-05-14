@@ -17,8 +17,6 @@ function! s:cpp() abort
   for s:i in range(len(s:in))
     let s:a = system('echo ' . substitute(substitute(s:in[s:i], '\n', ' ', 'g'), '\((\|)\)', '\\\1', 'g') . ' | ./a.out')[:-2]
 
-    let s:out[s:i] = substitute(s:out[s:i], '^\n', '', 'g')
-
 		call add(s:y_out, s:a)
 		if s:a !=# s:out[s:i]
 			call add(s:t_bool, 'WA')
@@ -107,10 +105,10 @@ function! atcoder#Curl(n) abort
   let s:output = []
   while match(s:text, '入力例.\?' . s:i) != -1
     call add(s:input, '入力例 ' . s:i)
-    call add(s:input, matchstr(matchstr(s:text, '入力例\s\?' . s:i . '.\{-}</pre>'), 'pre>.\{-}</pre')[4:-7])
+    call add(s:input, substitute(s:text, '.*入力例.\?1.\{-}pre.\{-}>\(\s\|\n\|\)*\(.\{-}\)\n\?</pre>.*', '\2', ''))
     call add(s:input, '入力例 ' . s:i)
     call add(s:output, '出力例 ' . s:i)
-    call add(s:output, matchstr(matchstr(s:text, '出力例\s\?' . s:i . '.\{-}</pre>'), 'pre>.\{-}</pre')[4:-7])
+    call add(s:output, substitute(s:text, '.*出力例.\?1.\{-}pre.\{-}>\(\s\|\n\)*\(.\{-}\)\n\?</pre>.*', '\2', ''))
     call add(s:output, '出力例 ' . s:i)
     let s:i += 1
   endwhile
