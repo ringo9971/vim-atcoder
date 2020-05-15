@@ -184,8 +184,26 @@ function! atcoder#AddTestCase() abort
     endfor
     call add(s:list, '出力例 ' . s:i)
   endif
+  let s:i += 1
 
   call writefile(s:list, s:filepath, 'a')
+endfunction
+
+function! atcoder#DeleteTestCase(num) abort
+  if !exists('s:filepath')
+    echo '先に:AtCoderをして下さい'
+    return
+  endif
+
+  let s:text = join(readfile(s:filepath), "\n")
+  if matchstr(s:text, '入力例 ' . a:num) != -1
+    let s:text = substitute(s:text, '入力例 ' . a:num . '.*入力例 ' . a:num, '', '')
+  endif
+  if matchstr(s:text, '出力例 ' . a:num) != -1
+    let s:text = substitute(s:text, '出力例 ' . a:num . '.*出力例 ' . a:num, '', '')
+  endif
+
+  call writefile([s:text], s:filepath)
 endfunction
 
 function! atcoder#AtCoder()
