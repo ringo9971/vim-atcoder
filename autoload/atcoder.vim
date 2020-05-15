@@ -18,7 +18,7 @@ function! s:cpp() abort
     let s:a = system('echo ' . substitute(substitute(s:in[s:i], '\n', ' ', 'g'), '\((\|)\)', '\\\1', 'g') . ' | ./a.out')[:-2]
 
 		call add(s:y_out, s:a)
-		if s:a !=# s:out[s:i]
+		if s:a !=# s:out[s:i] && s:out[s:i] !=#  ''
 			call add(s:t_bool, 'WA')
 			let s:bool = v:false
 		else
@@ -138,6 +138,54 @@ function! atcoder#Get(n) abort
   endif
   call atcoder#Curl(a:n)
   call atcoder#AtCoder()
+endfunction
+
+function! atcoder#AddTestCase() abort
+  if !exists('s:filepath')
+    echo '先に:AtCoderをして下さい'
+    return
+  endif
+
+  let s:i = 1
+  while match(s:text, '入力例.\?' . s:i) != -1
+    let s:i += 1
+  endwhile
+
+  let s:text = readfile(expand('%:p'))
+  let s:input = []
+  let s:output = []
+  if count(s:text, '')
+    let s:flag = v:false
+    for i in s:text
+      if i ==# ''
+        let s:flag = v:true
+      endif
+      if !s:flag
+        call add(s:input, i)
+      else
+        call add(s:output, i)
+      endif
+    endfor
+  else
+    let s:input = s:text
+  endif
+  let s:output = s:output[1:]
+
+  let s:list = []
+  call add(s:list, '入力例 ' . s:i)
+  for i in s:input
+    call add(s:list, i)
+  endfor
+  call add(s:list, '入力例 ' . s:i)
+  if s:output != []
+    call add(s:list, '出力例 ' . s:i)
+    for i in s:output
+      call add(s:list, i)
+    endfor
+    call add(s:list, '出力例 ' . s:i)
+  endif
+
+  call writefile(s:list, s:filepath, 'a')
 endfunction
 
 function! atcoder#AtCoder()
