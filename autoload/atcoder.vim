@@ -249,6 +249,7 @@ function! atcoder#AtCoder()
     let s:text = join(readfile(s:filepath), "\n")
     let s:text = substitute(s:text, '', '', 'g')
 
+    let s:i = 1
     while match(s:text, '入力例\s' . s:i) != -1
       call add(s:in,  matchstr(s:text, '入力例\s' . s:i . '.\{-}入力例')[12:-11])
       call add(s:out, matchstr(s:text, '出力例\s' . s:i . '.\{-}出力例')[12:-11])
