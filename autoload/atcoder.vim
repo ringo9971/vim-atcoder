@@ -147,6 +147,7 @@ function! atcoder#AddTestCase() abort
   endif
 
   let s:i = 1
+  let s:text = join(readfile(s:filepath), "\n")
   while match(s:text, '入力例.\?' . s:i) != -1
     let s:i += 1
   endwhile
@@ -202,6 +203,14 @@ function! atcoder#DeleteTestCase(num) abort
   if matchstr(s:text, '出力例 ' . a:num) != -1
     let s:text = substitute(s:text, '出力例 ' . a:num . '.*出力例 ' . a:num, '', '')
   endif
+
+  let s:num = a:num
+  while matchstr(s:text, '入力例 ' . string(s:num+1)) !=# ''
+    let s:text = substitute(s:text, '入力例 ' . string(s:num+1), '入力例 ' . s:num, 'g')
+    let s:text = substitute(s:text, '出力例 ' . string(s:num+1), '出力例 ' . s:num, 'g')
+    let s:num += 1
+  endwhile
+
 
   call writefile([s:text], s:filepath)
 endfunction
