@@ -13,43 +13,39 @@ AtCoderのテストケースのチェック
 * gcc
 * vim 8.1.1561
 
-### インストール
-#### dein
-
-```
-[[plugins]]
-repo = 'ringo9971/vim-atcoder'
-```
-
-#### NeoBundle
-
-```
-NeoBundle 'ringo9971/vim-atcoder'
-```
-
-#### Vundle
-
-```
-Plugin 'ringo9971/vim-atcoder'
-```
 
 ### 使い方
-```
-[abc||arc||agc]
- └ [コンテスト番号]
-    ├ A.cpp 
-    ├ B.cpp 
-    ├ C.cpp 
-    └ D.cpp
-```
-というディレクトリ構成上で
 
+ディレクトリ構成
 ```
-:AtCoder
+.
+├─ abc
+│   ├ 169
+│   │  ├ A.cpp 
+│   │  ├ B.cpp 
+│   │  ├ C.cpp 
+│   │  └ D.cpp
+│   ├ 170
+│   │  :
+│      
+├─ arc
+:   :
 ```
+
+
+| コマンド                     | 説明                        |
+|------------------------------|-----------------------------|
+| :AtCoder                     | テストケース確認            |
+| :AtCoderCurl `url`           | テストケース確認            |
+| :AtCoderSubmit               | submit                      |
+| :AtCoderAddTestCase          | テストケースの追加          |
+| :AtCoderDeleteTestCase `num` | `num`番目のテストケース削除 |
+
+
+
 ### 設定項目
 ```
-let g:atcoder_login = 0 (デフォルトは0)
+let g:atcoder_login = 0
 ```
 1にすることでログインができる(レートがつくコンテストはログインしないと問題が見れない
 )
@@ -58,11 +54,12 @@ let g:atcoder_name = [ユーザー名]
 let g:atcoder_pass = [パスワード]
 ```
 ログインに必要
+
 ```
 let g:atcoder_directory = [任意のフォルダ]
 ```
 
 ### 対応言語
 
-* C++ (g++ -std = gnu++1y -O2)
+* C++ (g++ -std=gnu++17 -O2)
 * Vim script (開発途中)
