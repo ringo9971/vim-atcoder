@@ -3,12 +3,7 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! atcoder#Login(n, p)
-	echo 'login now...'
-	let login = system('curl -c ' . $HOME . '/.atcoder-cookie.txt -d name=' . a:n . ' -d password=' . a:p . ' https://atcoder.jp/login?continue=https%3A%2F%2Fatcoder.jp%2Fhome')
-	" let login = system('curl -c ' . $HOME . '/.atcoder-cookie.txt -d name=' . a:n . ' -d password=' . a:p . ' https://arc030.contest.atcoder.jp/login?next_url=https%3A%2F%2Farc030.contest.atcoder.jp%2Fsubmissions%2Fme')
-	echo 'login!'
-endfunction
+py3file <sfile>:h:h/src/atcoder.py
 
 function! s:cpp() abort
   execute 'w!'
@@ -95,11 +90,8 @@ function! s:vimscript(num) abort
 endfunction
 
 function! atcoder#Curl(n) abort
-  let s:text = system('curl -b ' . $HOME . '/.atcoder-cookie.txt ' . a:n)
+  python3 getText(vim.eval('a:n'))
   echo a:n
-  " 新しい
-  " let s:text = system('curl -b ' . $HOME . '/.atcoder-cookie.txt https://atcoder.jp/contests/' . s:contest . '/tasks/' . s:contest . '_' . s:diff)
-  " echo 'https://atcoder.jp/contests/' . s:contest . '/tasks/' . s:contest . '_' . s:diff
 
   call system('touch ' . s:filepath)
 
@@ -218,7 +210,7 @@ endfunction
 function! atcoder#AtCoder()
 	if filereadable($HOME . '/.atcoder-cookie.txt' == 0) && g:atcoder_login == 1
 		echo filereadable($HOME . '/.atcoder-cookie.txt')
-		call atcoder#Login(g:atcoder_name, g:atcoder_pass)
+		" call atcoder#Login(g:atcoder_name, g:atcoder_pass)
 	endif
   
   let s:in     = []
