@@ -89,6 +89,10 @@ function! s:vimscript(num) abort
   execute 'w'
 endfunction
 
+function! atcoder#submit() abort
+  python3 submit(vim.eval('s:contest'), vim.eval('s:diff'), vim.eval('expand("%:p")'))
+endfunction
+
 function! atcoder#Curl(n) abort
   python3 getText(vim.eval('a:n'))
   echo a:n
