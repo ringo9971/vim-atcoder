@@ -2,11 +2,12 @@ import vim
 import requests
 from bs4 import BeautifulSoup
 
+ATCODER_LOGIN = "https://atcoder.jp/login"
 
 def getText(url):
     session = requests.session()
 
-    res = session.get("http://atcoder.jp/login")
+    res = session.get(ATCODER_LOGIN)
     page = BeautifulSoup(res.text, 'lxml')
     csrf_token = page.find(attrs={'name': 'csrf_token'}).get('value')
     login_info = {
@@ -14,7 +15,7 @@ def getText(url):
         "username": vim.eval('g:atcoder_name'),
         "password": vim.eval('g:atcoder_pass'),
     }
-    session.post("http://atcoder.jp/login", data=login_info)
+    session.post(ATCODER_LOGIN, data=login_info)
 
     page = session.get(url)
 
@@ -26,7 +27,7 @@ def getText(url):
 def submit(contest, diff, path):
     session = requests.session()
 
-    res = session.get("http://atcoder.jp/login")
+    res = session.get(ATCODER_LOGIN)
     page = BeautifulSoup(res.text, 'lxml')
     csrf_token = page.find(attrs={'name': 'csrf_token'}).get('value')
     login_info = {
@@ -34,7 +35,7 @@ def submit(contest, diff, path):
         "username": vim.eval('g:atcoder_name'),
         "password": vim.eval('g:atcoder_pass'),
     }
-    r = session.post(LOGIN_URL, data=login_info)
+    r = session.post(ATCODER_LOGIN, data=login_info)
 
     resp = session.get("https://atcoder.jp/contests/" + contest + "/submit")
 
