@@ -89,7 +89,11 @@ function! s:vimscript(num) abort
   execute 'w'
 endfunction
 
-function! atcoder#submit() abort
+function! atcoder#submit(...) abort
+  if a:0 >= 1
+    let s:contest = split(a:1, '/')[4]
+    let s:diff = a:1[-1:-1]
+  endif
   python3 submit(vim.eval('s:contest'), vim.eval('s:diff'), vim.eval('expand("%:p")'))
 endfunction
 
