@@ -10,7 +10,7 @@ let g:loaded_vim_atcoder = 1
 
 command! AtCoder call atcoder#AtCoder()
 command! AtCoderAddTestCase call atcoder#AddTestCase()
-command! AtCoderSubmit call atcoder#submit()
+command! -nargs=? AtCoderSubmit call atcoder#submit(<f-args>)
 command! -nargs=1 AtCoderCurl call atcoder#Get(<f-args>)
 command! -nargs=1 AtCoderDeleteTestCase call atcoder#DeleteTestCase(<f-args>)
 
