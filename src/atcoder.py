@@ -1,4 +1,5 @@
 import vim
+import re
 import requests
 from bs4 import BeautifulSoup
 
@@ -42,13 +43,16 @@ def submit(contest, diff, path):
     soup = BeautifulSoup(resp.text, "html.parser")
     session_id = soup.find("input", attrs={"type": "hidden"}).get("value")
 
+    language_area = soup.find('select', attrs = {"data-placeholder": "-"})
+    language_id   = language_area.find("option", text = re.compile(".*C\\+\\+ \\(GCC 9.*|.*C\\+\\+14 \\(GCC 5.*")).get("value")
+
+
     with open(path) as f:
         source = f.read()
-
     postdata = {
         "csrf_token": session_id,
         "data.TaskScreenName": contest + "_" + diff,
-        "data.LanguageId": "4003",
+        "data.LanguageId": language_id,
         "sourceCode": source
     }
 
