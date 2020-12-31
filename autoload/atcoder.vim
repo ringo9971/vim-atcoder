@@ -5,6 +5,9 @@ set cpo&vim
 
 py3file <sfile>:h:h/src/atcoder.py
 
+let s:ac = ["    _       ____   _","   / \\     / ___| | |","  / _ \\   | |     | |"," / ___ \\  | |___  |_|","/_/   \\_\\  \\____| (_)",""]
+let s:wa = ["__        __     _      _ ","\\ \\      / /    / \\    | |"," \\ \\ /\\ / /    / _ \\   | |","  \\ V  V /    / ___ \\  |_|","   \\_/\\_/    /_/   \\_\\ (_)",""]
+
 function! s:cpp() abort
   execute 'w!'
   let s:a = system('g++ -std=gnu++17 -O2 ' . expand('%'))
@@ -13,7 +16,7 @@ function! s:cpp() abort
     let s:a = system('echo ' . substitute(substitute(s:in[s:i], '\n', ' ', 'g'), '\((\|)\|#\|\.\)', '\\\1', 'g') . ' | ./a.out')[:-2]
 
 		call add(s:y_out, s:a)
-		if s:a !=# s:out[s:i] && s:out[s:i] !=#  ''
+		if s:a !=# s:out[s:i] && s:out[s:i] !=# ''
 			call add(s:t_bool, 'WA')
 			let s:bool = v:false
 		else
@@ -237,8 +240,6 @@ function! atcoder#AtCoder()
 	    \   'columns': [{}, {}, {}, {}, {}], 
 	    \   'header':  ['No.', 'IN', 'OUT', '結果', '判定'], 
 	    \})
-	let s:ac = ["    _       ____   _","   / \\     / ___| | |","  / _ \\   | |     | |"," / ___ \\  | |___  |_|","/_/   \\_\\  \\____| (_)",""]
-	let s:wa = ["__        __     _      _ ","\\ \\      / /    / \\    | |"," \\ \\ /\\ / /    / _ \\   | |","  \\ V  V /    / ___ \\  |_|","   \\_/\\_/    /_/   \\_\\ (_)",""]
 	
   if exists('g:atcoder_directory')
     let s:filepath = atcoder#Getpath()
@@ -260,8 +261,8 @@ function! atcoder#AtCoder()
 
     let s:i = 1
     while match(s:text, '入力例\s' . s:i) != -1
-      call add(s:in,  matchstr(s:text, '入力例\s' . s:i . '.\{-}入力例')[12:-11])
-      call add(s:out, matchstr(s:text, '出力例\s' . s:i . '.\{-}出力例')[12:-11])
+      call add(s:in,  matchstr(s:text, '入力例\s' . s:i . '.\{-}入力例')[11+strlen(s:i):-11])
+      call add(s:out, matchstr(s:text, '出力例\s' . s:i . '.\{-}出力例')[11+strlen(s:i):-11])
       let s:i += 1
     endwhile
   else
